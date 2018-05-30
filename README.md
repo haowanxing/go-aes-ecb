@@ -1,6 +1,6 @@
 # go-aes-ecb
 
-A Simple Go Encrypter/Decryper For AES-ECB Mode
+A Simple Go Encryptor/Decryptor For AES-ECB Mode. With PKCS5(Un)Padding.
 
 # Usage
 
