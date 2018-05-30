@@ -6,35 +6,35 @@ import (
 	"crypto/cipher"
 )
 
-// Aes/ECB模式的加密方法，PKCS5填充方式
+// Aes/ECB模式的加密方法，PKCS7填充方式
 func AesEncrypt(src, key string) []byte {
-	Cipher, err := aes.NewCipher([]byte(key))
+	Block, err := aes.NewCipher([]byte(key))
 	if err != nil {
 		panic(err)
 	}
 	if src == "" {
 		panic("plaintext empty")
 	}
-	mode := NewECBEncrypter(Cipher)
+	mode := NewECBEncrypter(Block)
 	ciphertext := []byte(src)
-	ciphertext = PKCS5Padding(ciphertext, mode.BlockSize())
+	ciphertext = PKCS7Padding(ciphertext, mode.BlockSize())
 	mode.CryptBlocks(ciphertext, ciphertext)
 	return ciphertext
 }
 
-// Aes/ECB模式的解密方法，PKCS5填充方式
+// Aes/ECB模式的解密方法，PKCS7填充方式
 func AesDecrypt(src, key string) []byte {
-	Cipher, err := aes.NewCipher([]byte(key))
+	Block, err := aes.NewCipher([]byte(key))
 	if err != nil {
 		panic(err)
 	}
 	if src == "" {
 		panic("plaintext empty")
 	}
-	mode := NewECBDecrypter(Cipher)
+	mode := NewECBDecrypter(Block)
 	ciphertext := []byte(src)
 	mode.CryptBlocks(ciphertext, ciphertext)
-	ciphertext = PKCS5UnPadding(ciphertext)
+	ciphertext = PKCS7UnPadding(ciphertext)
 	return ciphertext
 }
 
@@ -102,15 +102,15 @@ func (x *ecbDecrypter) CryptBlocks(dst, src []byte) {
 	}
 }
 
-// PKCS5填补方法
-func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
+// PKCS7填充
+func PKCS7Padding(ciphertext []byte, blockSize int) []byte {
 	padding := blockSize - len(ciphertext)%blockSize
 	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
 	return append(ciphertext, padtext...)
 }
 
-// PKCS5去填补方法
-func PKCS5UnPadding(ciphertext []byte) []byte {
+// PKCS7去除
+func PKCS7UnPadding(ciphertext []byte) []byte {
 	length := len(ciphertext)
 	unpadding := int(ciphertext[length-1])
 	return ciphertext[:(length - unpadding)]
