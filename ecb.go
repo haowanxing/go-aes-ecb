@@ -104,11 +104,7 @@ func (x *ecbDecrypter) CryptBlocks(dst, src []byte) {
 
 // PKCS5填补方法
 func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
-	mod := len(ciphertext) % blockSize
-	if mod == 0 {
-		return ciphertext
-	}
-	padding := blockSize - mod
+	padding := blockSize - len(ciphertext)%blockSize
 	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
 	return append(ciphertext, padtext...)
 }
