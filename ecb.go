@@ -10,36 +10,37 @@ import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
+	"errors"
 )
 
 // Aes/ECB模式的加密方法，PKCS7填充方式
-func AesEncrypt(src, key []byte) []byte {
+func AesEncrypt(src, key []byte) ([]byte, error) {
 	Block, err := aes.NewCipher(key)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	if len(src) == 0 {
-		panic("plaintext empty")
+		return nil, errors.New("plaintext empty")
 	}
 	mode := NewECBEncrypter(Block)
 	ciphertext := src
 	mode.CryptBlocks(ciphertext, ciphertext)
-	return ciphertext
+	return ciphertext, nil
 }
 
 // Aes/ECB模式的解密方法，PKCS7填充方式
-func AesDecrypt(src, key []byte) []byte {
+func AesDecrypt(src, key []byte) ([]byte, error) {
 	Block, err := aes.NewCipher(key)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	if len(src) == 0 {
-		panic("plaintext empty")
+		return nil, errors.New("plaintext empty")
 	}
 	mode := NewECBDecrypter(Block)
 	ciphertext := src
 	mode.CryptBlocks(ciphertext, ciphertext)
-	return ciphertext
+	return ciphertext, nil
 }
 
 // ECB模式结构体
