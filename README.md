@@ -21,10 +21,18 @@ func main() {
 	// 使用PKCS#7对原文进行填充，BlockSize为16字节
 	ciphertext := ecb.PKCS7Padding([]byte(content), 16)
 
-	crypted := ecb.AesEncrypt(ciphertext, []byte(key)) //ECB加密
+	crypted, err := ecb.AesEncrypt(ciphertext, []byte(key)) //ECB加密
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	fmt.Println("crypted: ", crypted, string(crypted))
 
-	origin := ecb.AesDecrypt(crypted, []byte(key)) // ECB解密
+	origin, err := ecb.AesDecrypt(crypted, []byte(key)) // ECB解密
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	// 使用PKCS#7对解密后的内容去除填充
 	origin = ecb.PKCS7UnPadding(origin)
 	fmt.Println("decrypted: ", origin, string(origin))
