@@ -1,3 +1,9 @@
+/*
+ * A Simple Tool: Encryptor/Decryptor of AES-ECB Mode With PKCS7
+ * 简单封装的AES-ECB模式的加解密工具，采用PKCS7填充方式
+ * Author: Haowanxing
+ */
+
 package ecb
 
 import (
@@ -7,34 +13,34 @@ import (
 )
 
 // Aes/ECB模式的加密方法，PKCS7填充方式
-func AesEncrypt(src, key string) []byte {
-	Block, err := aes.NewCipher([]byte(key))
+func AesEncrypt(src, key []byte) []byte {
+	Block, err := aes.NewCipher(key)
 	if err != nil {
 		panic(err)
 	}
-	if src == "" {
+	if len(src) == 0 {
 		panic("plaintext empty")
 	}
 	mode := NewECBEncrypter(Block)
-	ciphertext := []byte(src)
-	ciphertext = PKCS7Padding(ciphertext, mode.BlockSize())
+	ciphertext := src
+	// ciphertext = PKCS7Padding(ciphertext, mode.BlockSize())
 	mode.CryptBlocks(ciphertext, ciphertext)
 	return ciphertext
 }
 
 // Aes/ECB模式的解密方法，PKCS7填充方式
-func AesDecrypt(src, key string) []byte {
-	Block, err := aes.NewCipher([]byte(key))
+func AesDecrypt(src, key []byte) []byte {
+	Block, err := aes.NewCipher(key)
 	if err != nil {
 		panic(err)
 	}
-	if src == "" {
+	if len(src) == 0 {
 		panic("plaintext empty")
 	}
 	mode := NewECBDecrypter(Block)
-	ciphertext := []byte(src)
+	ciphertext := src
 	mode.CryptBlocks(ciphertext, ciphertext)
-	ciphertext = PKCS7UnPadding(ciphertext)
+	// ciphertext = PKCS7UnPadding(ciphertext)
 	return ciphertext
 }
 
@@ -114,4 +120,18 @@ func PKCS7UnPadding(ciphertext []byte) []byte {
 	length := len(ciphertext)
 	unpadding := int(ciphertext[length-1])
 	return ciphertext[:(length - unpadding)]
+}
+
+// 零点填充
+func ZerosPadding(ciphertext []byte, blockSize int) []byte {
+	padding := blockSize - len(ciphertext)%blockSize
+	padtext := bytes.Repeat([]byte{byte(0)}, padding)
+	return append(ciphertext, padtext...)
+}
+
+// 零点去除
+func ZerosUnPadding(ciphertext []byte) []byte {
+	return bytes.TrimFunc(ciphertext, func(r rune) bool {
+		return r == rune(0)
+	})
 }

@@ -1,4 +1,6 @@
-# go-aes-ecb
+# Go-AES-ECB
+
+[![Build Status](https://www.travis-ci.org/haowanxing/go-aes-ecb.svg?branch=master)](https://www.travis-ci.org/haowanxing/go-aes-ecb)
 
 A Simple Go Encryptor/Decryptor For AES-ECB Mode. With PKCS5 & Zeros (Un)Padding.
 
