@@ -1,6 +1,6 @@
 /*
- * A Simple Tool: Encryptor/Decryptor of AES-ECB Mode With PKCS7
- * 简单封装的AES-ECB模式的加解密工具，采用PKCS7填充方式
+ * A Simple Tool: Encryptor/Decryptor of AES-ECB Mode
+ * 简单封装的AES-ECB模式的加解密工具，提供PKCS7和Zeros填充方式
  * Author: Haowanxing
  */
 
@@ -23,7 +23,6 @@ func AesEncrypt(src, key []byte) []byte {
 	}
 	mode := NewECBEncrypter(Block)
 	ciphertext := src
-	// ciphertext = PKCS7Padding(ciphertext, mode.BlockSize())
 	mode.CryptBlocks(ciphertext, ciphertext)
 	return ciphertext
 }
@@ -40,7 +39,6 @@ func AesDecrypt(src, key []byte) []byte {
 	mode := NewECBDecrypter(Block)
 	ciphertext := src
 	mode.CryptBlocks(ciphertext, ciphertext)
-	// ciphertext = PKCS7UnPadding(ciphertext)
 	return ciphertext
 }
 
