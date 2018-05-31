@@ -1,3 +1,9 @@
+/*
+ * A Simple Tool: Encryptor/Decryptor of AES-ECB Mode With PKCS7
+ * 简单封装的AES-ECB模式的加解密工具，采用PKCS7填充方式
+ * Author: Haowanxing
+ */
+
 package ecb
 
 import (
