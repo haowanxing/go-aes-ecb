@@ -21,7 +21,10 @@ var tests = []encryptionTest{
 func TestAesEncrypt(t *testing.T) {
 	for _, pair := range tests {
 		plaintext := PKCS7Padding([]byte(pair.plaintext), 16) //BlockSize为16
-		encrypted := AesEncrypt(plaintext, []byte(pair.key))
+		encrypted,err := AesEncrypt(plaintext, []byte(pair.key))
+		if err != nil {
+			t.Error(err.Error())
+		}
 		str := base64.StdEncoding.EncodeToString(encrypted)
 		if pair.encrypted != str {
 			t.Error(
@@ -42,7 +45,10 @@ func TestAesDecrypt(t *testing.T) {
 				"base64Decode Err: ", err,
 			)
 		} else {
-			dectypted := AesDecrypt(str, []byte(pair.key))
+			dectypted,err := AesDecrypt(str, []byte(pair.key))
+			if err != nil {
+				t.Error(err.Error())
+			}
 			dectypted = PKCS7UnPadding(dectypted)
 			if pair.plaintext != string(dectypted) {
 				t.Error(
